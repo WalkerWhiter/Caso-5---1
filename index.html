@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Feed Widget</title>
+    <style>
+        .facebook-feed {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: #fff;
+        }
+        .facebook-feed h3 {
+            text-align: center;
+        }
+        .post {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .post:last-child {
+            border-bottom: none;
+        }
+        .post p {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="facebook-feed">
+    <h3>Últimas publicaciones</h3>
+    <div id="feed-container">
+        <!-- Las publicaciones se mostrarán aquí -->
+    </div>
+</div>
+
+<script>
+    const accessToken = 'EAAVjLpPQNaABO0ZAeaWIY7RmORNPjSUZCUb9nPZApiHqi5bVFESJNhmEQ6dihlucVT82RVJywzqBXgcOwDDJQBSeK0L7zy9HfoxWbRqeTZCOvZBqUt1pQxVm4r5ojHJiJZCbisiqilP6U05ycwyUraeTA4JaqV9HRxlsItN214ArzJwbneoSdcWW0bIQumikZBXZBG0DobfOaGzH4wIdpuMSIZC98ZCFQZD'; // Sustituye con tu Access Token
+    const pageId = '102162359027569'; // Sustituye con el ID de la página de Facebook
+    const apiUrl = `https://graph.facebook.com/${pageId}/posts?access_token=${accessToken}&limit=5`;
+
+    // Función para cargar las publicaciones
+    function loadFacebookFeed() {
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Muestra la respuesta de la API
+                const posts = data.data;
+                const container = document.getElementById('feed-container');
+                container.innerHTML = ''; // Limpiar antes de añadir nuevas publicaciones
+
+                posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('post');
+                    postElement.innerHTML = `
+                        <p><strong>Fecha:</strong> ${new Date(post.created_time).toLocaleString()}</p>
+                        <p><strong>Contenido:</strong> ${post.message || 'Sin mensaje disponible'}</p>
+                    `;
+                    container.appendChild(postElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar el feed:', error);
+            });
+    }
+
+    // Cargar el feed al iniciar
+    loadFacebookFeed();
+</script>
+
+</body>
+</html>
